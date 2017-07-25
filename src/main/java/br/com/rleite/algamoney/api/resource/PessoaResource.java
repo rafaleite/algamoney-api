@@ -17,37 +17,37 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.rleite.algamoney.api.event.ResourceCreatedEvent;
-import br.com.rleite.algamoney.api.model.Categoria;
-import br.com.rleite.algamoney.api.repository.CategoriaRepository;
+import br.com.rleite.algamoney.api.model.Pessoa;
+import br.com.rleite.algamoney.api.repository.PessoaRepository;
 
 @RestController
-@RequestMapping("/categorias")
-public class CategoriaResource {
+@RequestMapping("/pessoas")
+public class PessoaResource {
 	
 	@Autowired
-	private CategoriaRepository categoriaRepository;
+	private PessoaRepository pessoaRepository;
 	
 	@Autowired
 	private ApplicationEventPublisher publisher;
 	
 	@GetMapping
-	public List<Categoria> find() {
-		return categoriaRepository.findAll();
+	public List<Pessoa> find() {
+		return pessoaRepository.findAll();
 	}
 	
 	@PostMapping
-	public ResponseEntity<Categoria> create(@Valid @RequestBody Categoria categoria, HttpServletResponse response) {
-		Categoria categoriaSalva = categoriaRepository.save(categoria);
-		publisher.publishEvent(new ResourceCreatedEvent(this, response, categoriaSalva.getCodigo()));
+	public ResponseEntity<Pessoa> create(@Valid @RequestBody Pessoa pessoa, HttpServletResponse response) {
+		Pessoa pessoaSalva = pessoaRepository.save(pessoa);
 		
-		return ResponseEntity.status(HttpStatus.CREATED).body(categoriaSalva);
+		publisher.publishEvent(new ResourceCreatedEvent(this, response, pessoaSalva.getCodigo()));
+		return ResponseEntity.status(HttpStatus.CREATED).body(pessoaSalva);
 	}
 	
 	@GetMapping("/{codigo}")
-	public ResponseEntity<Categoria> findById(@PathVariable Long codigo) {
-		Categoria categoria = categoriaRepository.findOne(codigo);
+	public ResponseEntity<Pessoa> findById(@PathVariable Long codigo) {
+		Pessoa pessoa = pessoaRepository.findOne(codigo);
 		
-		return categoria == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(categoria) ;
+		return pessoa == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(pessoa) ;
 	}
 	
 }
